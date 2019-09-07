@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1567887227831.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "600594756",
+    "id" : "8D2F86DD",
+    "lastKnownWriteTime" : 1567887207,
+    "last_content_update" : 1567887207,
+    "path" : "C:/Users/Sushmita Singh/Desktop/Assignments/QuanManagement/Sept_8/ssingh35_1/ssingh35_1.R",
+    "project_path" : "ssingh35_1.R",
+    "properties" : {
+        "cursorPosition" : "2,32",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
