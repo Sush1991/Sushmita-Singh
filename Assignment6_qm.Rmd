@@ -1,0 +1,155 @@
+---
+title: "Assignment6QM"
+output: html_document
+---
+
+```{r}
+library(Benchmarking)
+x <- matrix(c(150,400,320,520,350,320,0.2,0.7,1.2,2,1.2,.7),ncol = 2)
+y <- matrix(c(140000,140000,420000,280000,190000,140000,3500,21000,10500,42000,25000,15000),ncol = 2)
+colnames(x) <- c("staff_hours","supplies")
+colnames(y) <- c("reimbursed","privetly_paid")
+x
+y
+```
+
+
+```{r}
+e1 <- dea(x,y,RTS = "crs") 
+# provide the input and output 
+peers(e1) 
+# identify the peers
+lambda(e1) 
+# identify the relative weights given to the peers
+dea.plot.isoquant(x,y,RTS="crs") 
+# plot the results
+summary(e1)
+```
+
+```{r}
+e2 <- dea(x,y,RTS = "vrs") 
+# provide the input and output 
+peers(e2) 
+# identify the peers
+lambda(e2) 
+# identify the relative weights given to the peers
+dea.plot.isoquant(x,y,RTS="vrs") 
+# plot the results
+summary(e2)
+```
+
+```{r}
+e3 <- dea(x,y,RTS = "irs") 
+# provide the input and output 
+peers(e3) 
+# identify the peers
+lambda(e3) 
+# identify the relative weights given to the peers
+dea.plot.isoquant(x,y,RTS="irs") 
+# plot the results
+summary(e3)
+```
+
+```{r}
+e4 <- dea(x,y,RTS = "drs") 
+# provide the input and output 
+peers(e4) 
+# identify the peers
+lambda(e4) 
+# identify the relative weights given to the peers
+dea.plot.isoquant(x,y,RTS="drs") 
+# plot the results
+summary(e4)
+```
+
+```{r}
+e5 <- dea(x,y,RTS="fdh") 
+# provide the input and output 
+peers(e5) 
+# identify the peers
+lambda(e5) 
+# identify the relative weights given to the peers
+dea.plot.isoquant(x,y,RTS="fdh") 
+# plot the results
+summary(e5)
+```
+
+```{r}
+e6 <- dea(x,y,RTS="fdh+") 
+# provide the input and output 
+peers(e6) 
+# identify the peers
+lambda(e6) 
+# identify the relative weights given to the peers
+
+# plot the results
+summary(e6)
+```
+
+##Compariative Analysis
+As for the analysis, I will summarize the efficency results as a function of different DEA technology assumptions.
+
+
+fdh: FDH technology and input orientated efficiency
+Number of firms with efficiency==1 are 6 out of 6 
+Mean efficiency: 1 
+                
+  Eff range      #   %
+        E ==1    6 100
+
+
+
+vrs: VRS technology and input orientated efficiency
+Number of firms with efficiency==1 are 5 out of 6 
+Mean efficiency: 0.983 
+               
+  Eff range      #  %
+  0.8<= E <0.9   1 17
+  0.9<= E <1     0  0
+        E ==1    5 83
+
+
+
+drs: DRS technology and input orientated efficiency
+Number of firms with efficiency==1 are 4 out of 6 
+Mean efficiency: 0.974 
+                
+  Eff range      #  %
+  0.8<= E <0.9   1 17
+  0.9<= E <1     1 17
+        E ==1    4 67
+
+
+
+crs: CRS technology and input orientated efficiency
+Number of firms with efficiency==1 are 4 out of 6 
+Mean efficiency: 0.974 
+              
+  Eff range      #  %
+  0.8<= E <0.9   1 17
+  0.9<= E <1     1 17
+        E ==1    4 67
+
+
+
+irs: IRS technology and input orientated efficiency
+Number of firms with efficiency==1 are 5 out of 6 
+Mean efficiency: 0.983 
+               
+  Eff range      #  %
+  0.8<= E <0.9   1 17
+  0.9<= E <1     0  0
+        E ==1    5 83
+
+
+
+frh: ADD technology and input orientated efficiency
+Number of firms with efficiency==1 are 6 out of 6 
+Mean efficiency: 1 
+               
+  Eff range      #   %
+        E ==1    6 100
+
+
+It was found that DMU(5) and DMU(6) were 97.75% and 86.75% efficent, respectively. The mean efficiency = 97.4%.
+
