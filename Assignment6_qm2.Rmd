@@ -1,0 +1,169 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library(lpSolveAPI)
+
+```
+
+
+Basic explanation of goal programming:
+
+ 
+Maximize Z = P - 6C - 3D, where  
+ 
+The following is a listing of the required questions to solve:
+
+X1 = total production rates of project 1
+X2 = total production rates of project 2
+X3 = total production rates of project 3
+
+objective function:
+
+Max z = P - 6C - 3D
+
+  where: 
+  Z = Goal Programming of various goals in long profit 
+  P = total (discounted) profit over the life of the new products
+  C = change (in either direction) in the current level of employment
+  D = decrease (if any) in next year's earnings from the current year's level. 
+ 
+constraints & definitions:
+
+20x1 + 15x2 + 35x3 = P (profit objective function in millions $)
+6x1 + 4x2 + 5x3 = 50 (employment in 100s of employees)
+8x1 + 7 x2 + 5x3 >= 75 (earnings next year in millions $) 
+
+penalties:
+
+C = 6(+) 6(-) (change in either direction in the current level of employment)
+D = 3(+) 3(-) (decrease n next year's earnings from the current year's level)
+y1, and y2 can be positive or negative, and as such can be expressed as the difference between two positive variables.
+
+
+LP formulation of constraints for this problem:
+
+
+z = P - 6C - 3D, 
+
+
+y2 = 6x1 + 4x2 + 5x3 - 50
+y3 = 8x1 + 7x2 + 5x3 - 75
+
+
+
+Since y1 = y1+ - y1-
+      y2 = y2+ - y2-
+
+We substitute the new definitions for y2 and y3 back into the original constraints.
+y1+ - y1- = 6x1 + 4x2 + 5x3 - 50
+y2+ - y2- = 8x1 + 7x2 + 5x3 - 75
+
+Next, algebraically convert the constraints and P into LP format.
+
+6x1 + 4x2 + 5x3 - (y1+ - y1-) = 50
+8x1 + 7x2 + 5x3 - (y2+ - y2-) = 75
+20x1 + 15x2 + 35x3 = P
+xj >= 0, yk >= o, yk >= 0
+
+
+
+Maximize Z = P - 6C - 3D
+
+Max z = 20x1 + 15x2 + 25x3 - 6y1+ - 6y1- - 3y2-
+
+We need to account for all decsion variables in the objective function.
+Max z = 20x1 + 15x2 + 25x3 - 6y1+ - 6y1- + 0y2+ - 3y2-
+
+Question 3. 
+
+Formulate and solve the linear programming model.
+
+Objective function:
+Max z = 20x1 + 15x2 + 25x3 - 6y1+ + -6y1- -3y2-
+ST:
+6x1 + 4x2 + 5x3 - (y1+ - y1-) = 50
+8x1 + 7x2 + 5x3 - (y2+ - y2-) = 75
+  where, xj >= 0, yk >= o, yk >= 0
+
+We need to account for all decision variables in both the objective function and constraints to properly input into the LP model via r-script.
+Max z = 20x1 + 15x2 + 25x3 + -6y1+ - 6y1- + 0y2+ + -3y2-
+ST
+6x1 + 4x2 + 5x3 + -1y1+ + 1y1- + 0y2+ + 0y2- = 50
+8x1 + 7x2 + 5x3 + 0y1+ + 0y1- + -1y2+ + 1y2- = 75
+  where, xj >= 0, yk >= o, yk >= 0
+
+
+
+```{r}
+# make an lp object with 2 constraints (rows) and 7 (colums) decision variables
+lprec <- make.lp(2, 7)
+# Now create the objective function. The default is a minimization problem. 
+set.objfn(lprec, c(20,15,25,-6,-6,0,-3))
+# As the default is a minimization problem, we change the direction to set maximization.
+lp.control(lprec,sense='max')
+# Add the two constraints associated with change in level of employment and next years' earnings.
+#First set of constraints are for Plant 1.
+# Current level of employment.
+add.constraint(lprec, c(6, 4, 5, -1, 1, 0, 0), "=", 50)
+# Next years' earnings.
+add.constraint(lprec, c(8, 7, 5, 0, 0, -1, 0), "=", 75)
+# Set bounds for variables.
+# Remember that all variables had to be non-negative. We don't need to to do it here, as that is the default,
+# we can set bounds explicitly
+set.bounds(lprec, lower = c(0, 0, 0, 0, 0, 0, 0), columns = c(1, 2, 3, 4, 5, 6, 7)) 
+#Not really needed but we can do it anyway.
+# To identify the variables and constraints, we can create labels for the columns (variables)
+# and rows (constraints)
+# set variable names and name the constraints by way of function
+ColNames <- c("rate_of_project1", "rate_of_project2", "rate_of_project3","penalty_positive_change_level_of_employment", "penalty_negative_change_level_of_employment", "penalty_positive_change_level_of_next_year_earnings", "penalty_negative_change_level_of_next_year_earnings", "non-negativity_constraint", "non-negativity_constraint", "non-negativity_constraint", "non-negativity_constraint", "non-negativity_constraint", "non-negativity_constraint", "non-negativity_constraint", "non-negativity_constraint", "non-negativity_constraint")
+RowNames <- c("current_level_emplyment", "next_year_earnings")
+# dimnames(lprec) <- list(RowNames, ColNames)
+# Now, print out the model
+lprec
+# The model can also be saved to a file
+write.lp(lprec, filename = "Emax_Corporation_goal_programming_problem", type = "lp")
+
+```
+
+We now solve the above LP problem
+```{r}
+solve(lprec)
+```
+
+We now output the value of the objective function, and the variables
+```{r}
+get.objective(lprec)
+get.variables(lprec)
+```
+
+The solution shows that the profit is $225 million
+
+One difficulty in reading the output is that lpsolveAPI will not write the variable name next to the solution. As such, one should remember that the variables values are output in the order in which it shows up in the lp formulation. 
+
+Note that the solution is given in the order in which the variables appear in the formulation. This implies that x1 = 0, x2 = 0, x3 = 15, y1+ = 25, y1- = 0, y2+ = 0, and y2- = 0. Hence, we had a increase in emplyment of 25 hundred emplyees, and no chnage in over next year's profit earning. The employment goal was exceeded by 25 (2500 employees). Max profit = $225 million.
+
+
+```{r}
+write.lp(lprec, filename = "Emax_Corporation_goal_programming_problem", type = "lp")
+x <- read.lp(filename = "Emax_Corporation_goal_programming_problem", type = "lp") 
+# create an lp object x
+x                          
+# display x               
+
+```
+
+Solve the lp model
+```{r}
+solve(x)
+get.objective(x)        # get objective value
+get.variables(x)        # get values of decision variables
+get.constraints(x)      # get constraint RHS values
+```
+ 
+
+
+
